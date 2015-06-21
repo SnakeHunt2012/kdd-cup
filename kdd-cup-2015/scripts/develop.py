@@ -81,7 +81,31 @@ def load_train_data():
 
     return X_train, X_validate, y_train, y_validate
 
-def develop():
+def make_submission(classifier, path="../data/submission.csv"):
+
+    logger = logging.getLogger("make_submission")
+    logger.setLevel(logging.INFO)
+
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.INFO)
+
+    formatter = logging.Formatter("[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s")
+    ch.setFormatter(formatter)
+
+    logger.addHandler(ch)
+
+    logger.info("predict start ...")
+    id_test, X_test = load_test_data()
+    y_test_pred = classifier.predict_proba(X_test)
+    logger.info("y_test_pred.shape = %r", y_test_pred.shape)
+    logger.info("predict end.")
+
+    logger.info("dump submission.csv start ...")
+    submission = pd.DataFrame({"enrollment_id": id_test, "dropout": y_test_pred[:, -1]})
+    submission.to_csv(path, columns = ["enrollment_id", "dropout"], header=False, index=False)
+    logger.info("dump submission.csv end.")
+
+def train_validate_test():
 
     logger = logging.getLogger("develop")
     logger.setLevel(logging.INFO)
@@ -101,12 +125,12 @@ def develop():
 
     logger.info("train start ... ")
     classifier = RandomForestClassifier(
-        n_estimators = 100,
+        n_estimators = 200,
         criterion = "gini",
         max_features = None,
         max_depth = None,
         min_samples_split = 2,
-        min_samples_leaf = 2,
+        min_samples_leaf = 15,
         min_weight_fraction_leaf = 0.0,
         max_leaf_nodes = None,
         bootstrap = True,
@@ -127,16 +151,11 @@ def develop():
     logger.info("validateion set auc: %r", roc_auc_score(y_validate, y_validate_pred[:, -1]))
     logger.info("predict end.")
 
-    logger.info("predict start ...")
-    id_test, X_test = load_test_data()
-    y_test_pred = classifier.predict_proba(X_test)
-    logger.info("y_test_pred.shape = %r", y_test_pred.shape)
-    logger.info("predict end.")
+    make_submission(classifier)
 
-    logger.info("dump submission.csv start ...")
-    submission = pd.DataFrame({"enrollment_id": id_test, "dropout": y_test_pred[:, -1]})
-    submission.to_csv("../data/submission.csv", columns = ["enrollment_id", "dropout"], header=False, index=False)
-    logger.info("dump submission.csv end.")
+def develop():
+
+    train_validate_test()
 
 def main():
 
