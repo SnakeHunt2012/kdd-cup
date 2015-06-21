@@ -9,6 +9,25 @@ from sklearn.cross_validation import StratifiedShuffleSplit
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_auc_score
 
+def load_data(path):
+
+    logger = logging.getLogger("load_data")
+    logger.setLevel(logging.INFO)
+
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.INFO)
+
+    formatter = logging.Formatter("[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s")
+    ch.setFormatter(formatter)
+
+    logger.addHandler(ch)
+
+    logger.info("load data %r start ... ", path)
+    data = pd.read_csv(path).values
+    logger.info("data.shape = %r", data.shape)
+    logger.info("load data %r end.", path)
+    return data
+
 def load_test_data():
 
     logger = logging.getLogger("load_test_data")
@@ -22,9 +41,8 @@ def load_test_data():
 
     logger.addHandler(ch)
 
-    logger.info("load data begin ...")
-    test_data = pd.read_csv("../data/test_data.csv").values
-
+    test_data = load_data("../data/test_data.csv")
+    
     id_test = test_data[:, 0]
     X_test = test_data[:, 1:]
     logger.info("X_test.shape = %r", X_test.shape)
@@ -45,8 +63,7 @@ def load_train_data():
 
     logger.addHandler(ch)
 
-    logger.info("load data begin ... ")
-    train_data = pd.read_csv("../data/train_data.csv").values
+    train_data = load_data("../data/train_data.csv")
     np.random.shuffle(train_data)
 
     sss = StratifiedShuffleSplit(train_data[:, -1], test_size=0.2, n_iter=1)
