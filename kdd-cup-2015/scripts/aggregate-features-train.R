@@ -8,30 +8,30 @@ library("reshape")
 # load features
 ## 1. user feature
 ### 1. feature_history_course_count
-feature_history_course_count <- read.csv("../data/feature_history_course_count.csv", header = TRUE);
+feature_history_course_count <- read.csv("../data/feature_history_course_count_train.csv", header = TRUE);
 
 ## 2. course feature
 ### 2.1 feature_category
-feature_category <- read.csv("../data/feature_category.csv", header = TRUE);
+feature_category <- read.csv("../data/feature_category_train.csv", header = TRUE);
 
 ### 2.2 feature_user_count
-feature_user_count <- read.csv("../data/feature_user_count.csv", header = TRUE)
+feature_user_count <- read.csv("../data/feature_user_count_train.csv", header = TRUE)
 
 ## 3. enrollment feature
 ### 3.1 feature_event
-feature_event <- read.csv("../data/feature_event.csv", header = TRUE);
+feature_event <- read.csv("../data/feature_event_train.csv", header = TRUE);
 
 ### 3.2 feature_log_count
-feature_log_count <- read.csv("../data/feature_log_count.csv", header = TRUE);
+feature_log_count <- read.csv("../data/feature_log_count_train.csv", header = TRUE);
 
 ### 3.3 feature_left_time
-feature_left_time <- read.csv("../data/feature_left_time.csv", header = TRUE);
+feature_left_time <- read.csv("../data/feature_left_time_train.csv", header = TRUE);
 
 ### 3.4 feature_right_time
-feature_right_time <- read.csv("../data/feature_right_time.csv", header = TRUE);
+feature_right_time <- read.csv("../data/feature_right_time_train.csv", header = TRUE);
 
 ### 3.5 feature_total_time
-feature_total_time <- read.csv("../data/feature_total_time.csv", header = TRUE);
+feature_total_time <- read.csv("../data/feature_total_time_train.csv", header = TRUE);
 
 # aggregate features
 ## user_features
