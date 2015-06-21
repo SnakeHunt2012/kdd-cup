@@ -1,0 +1,5 @@
+{
+    "model_path": "$HOME/kdd/model/basicCoauthorBenchmarkRev2.pickle",
+    "submission_path": "$HOME/kdd/model/benchmark.csv",
+    "database_setting": "host='localhost' dbname='kdd' user='postgres' password='##AskForPassword##'"
+}
