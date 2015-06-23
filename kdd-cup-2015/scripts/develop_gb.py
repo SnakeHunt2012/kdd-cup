@@ -1,4 +1,5 @@
 #!/bin/env python2.7
+# -*- coding: utf-8 -*-
 
 import os
 import time
@@ -13,7 +14,7 @@ from collections import OrderedDict
 from multiprocessing import Process
 
 from sklearn.metrics import roc_auc_score
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.grid_search import ParameterGrid
 from sklearn.cross_validation import StratifiedShuffleSplit
 
@@ -135,22 +136,20 @@ def train_validate_test(param_dict):
     X_train, X_validate, y_train, y_validate = load_train_data()
 
     logger.info("train start ... ")
-    classifier = RandomForestClassifier(
+    classifier = GradientBoostingClassifier(
+        loss = param_dict["loss"],
+        learning_rate = param_dict["learning_rate"],
         n_estimators = param_dict["n_estimators"],
-        criterion = param_dict["criterion"],
-        max_features = param_dict["max_features"],
         max_depth = param_dict["max_depth"],
         min_samples_split = param_dict["min_samples_split"],
         min_samples_leaf = param_dict["min_samples_leaf"],
         min_weight_fraction_leaf = param_dict["min_weight_fraction_leaf"],
+        subsample = param_dict["subsample"],
+        max_features = param_dict["max_features"],
         max_leaf_nodes = param_dict["max_leaf_nodes"],
-        bootstrap = param_dict["bootstrap"],
-        oob_score = param_dict["oob_score"],
-        n_jobs = param_dict["n_jobs"],
-        random_state = param_dict["random_state"],
+        init = param_dict["init"],
         verbose = param_dict["verbose"],
-        warm_start = param_dict["warm_start"],
-        class_weight = param_dict["class_weight"]
+        warm_start = param_dict["warm_start"]
     )
     classifier.fit(X_train, y_train)
     logger.info("train end.")
@@ -165,11 +164,11 @@ def train_validate_test(param_dict):
     logger.info("predict end.")
 
     timestamp = time.strftime("[%Y-%m-%d]_[%H-%M-%S]", time.localtime(time.time()))
-    filename = "submission_rf_%s_[%d]_[%d]" % (timestamp, os.getpid(), thread.get_ident())
+    filename = "submission_gb_%s_[%d]_[%d]" % (timestamp, os.getpid(), thread.get_ident())
     path = "../data/%s.json" % filename
     
     meta = OrderedDict()
-    meta["model"] = "RandomForest"
+    meta["model"] = "GradientBoosting"
     meta["param_dict"] = param_dict
     meta["auc_train"] = auc_train
     meta["auc_validate"] = auc_validate
@@ -185,38 +184,19 @@ def develop():
 
     param_grid = [
         {
-            "n_estimators"             : [200],
-            "criterion"                : ["gini"],
-            "max_features"             : [None],
-            "max_depth"                : [None],
-            "min_samples_split"        : [3, 6, 9, 12, 15],
-            "min_samples_leaf"         : [3, 6, 9, 12, 15],
+            "loss"                     : ["deviance"], # ???
+            "learning_rate"            : [0.1], # ??? There is a trade-off between learning_rate and n_estimators.
+            "n_estimators"             : [100],
+            "max_depth"                : [3, 5, 7, 9, 11, 13, 15], # Ignored if ``max_leaf_nodes`` is not None.
+            "min_samples_split"        : [2, 6, 10],
+            "min_samples_leaf"         : [20, 25, 30, 35, 40, 45, 50],
             "min_weight_fraction_leaf" : [0.0],
-            "max_leaf_nodes"           : [None],
-            "bootstrap"                : [True],
-            "oob_score"                : [False],
-            "n_jobs"                   : [-1],
-            "random_state"             : [None],
-            "verbose"                  : [1],
-            "warm_start"               : [False],
-            "class_weight"             : [None],
-        },
-        {
-            "n_estimators"             : [200],
-            "criterion"                : ["entropy"],
+            "subsample"                : [1.0],
             "max_features"             : [None],
-            "max_depth"                : [None],
-            "min_samples_split"        : [10, 15],
-            "min_samples_leaf"         : [2, 5, 10],
-            "min_weight_fraction_leaf" : [0.0],
             "max_leaf_nodes"           : [None],
-            "bootstrap"                : [True],
-            "oob_score"                : [False],
-            "n_jobs"                   : [-1],
-            "random_state"             : [None],
+            "init"                     : [None], # ???
             "verbose"                  : [1],
-            "warm_start"               : [False],
-            "class_weight"             : [None],
+            "warm_start"               : [False]
         }
     ]
     param_list = list(ParameterGrid(param_grid))
