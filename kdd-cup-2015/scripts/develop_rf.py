@@ -130,9 +130,6 @@ def train_validate_test(param_dict):
 
     logger.addHandler(ch)
 
-    train_data = pd.read_csv("../data/train_data.csv").values
-    np.random.shuffle(train_data)
-
     X_train, X_validate, y_train, y_validate = load_train_data()
 
     logger.info("train start ... ")
@@ -191,24 +188,7 @@ def develop():
             "max_features"             : [None, "auto", "sqrt", "log2"],
             "max_depth"                : [None],
             "min_samples_split"        : [25, 50],
-            "min_samples_leaf"         : range(40, 55),
-            "min_weight_fraction_leaf" : [0.0],
-            "max_leaf_nodes"           : [None],
-            "bootstrap"                : [True],
-            "oob_score"                : [False],
-            "n_jobs"                   : [-1],
-            "random_state"             : [None],
-            "verbose"                  : [0],
-            "warm_start"               : [False],
-            "class_weight"             : [None],
-        },
-        {
-            "n_estimators"             : [200],
-            "criterion"                : ["entropy"],
-            "max_features"             : [None, "auto", "sqrt", "log2"],
-            "max_depth"                : [None],
-            "min_samples_split"        : [25, 50],
-            "min_samples_leaf"         : range(40, 55),
+            "min_samples_leaf"         : [45, 50, 55],
             "min_weight_fraction_leaf" : [0.0],
             "max_leaf_nodes"           : [None],
             "bootstrap"                : [True],

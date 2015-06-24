@@ -130,9 +130,6 @@ def train_validate_test(param_dict):
 
     logger.addHandler(ch)
 
-    train_data = pd.read_csv("../data/train_data.csv").values
-    np.random.shuffle(train_data)
-
     X_train, X_validate, y_train, y_validate = load_train_data()
 
     logger.info("train start ... ")
@@ -183,13 +180,28 @@ def train_validate_test(param_dict):
 def develop():
 
     param_grid = [
+        #{
+        #    "loss"                     : ["deviance"], # ???
+        #    "learning_rate"            : [0.1], # ??? There is a trade-off between learning_rate and n_estimators.
+        #    "n_estimators"             : [100],
+        #    "max_depth"                : [3, 4, 5, 6, 7], # Ignored if ``max_leaf_nodes`` is not None.
+        #    "min_samples_split"        : [2, 6, 10],
+        #    "min_samples_leaf"         : [20, 25, 30, 35, 40, 45, 50],
+        #    "min_weight_fraction_leaf" : [0.0],
+        #    "subsample"                : [1.0],
+        #    "max_features"             : [None],
+        #    "max_leaf_nodes"           : [None],
+        #    "init"                     : [None], # ???
+        #    "verbose"                  : [1],
+        #    "warm_start"               : [False]
+        #},
         {
             "loss"                     : ["deviance"], # ???
             "learning_rate"            : [0.1], # ??? There is a trade-off between learning_rate and n_estimators.
             "n_estimators"             : [100],
-            "max_depth"                : [3, 5, 7, 9, 11, 13, 15], # Ignored if ``max_leaf_nodes`` is not None.
-            "min_samples_split"        : [2, 6, 10],
-            "min_samples_leaf"         : [20, 25, 30, 35, 40, 45, 50],
+            "max_depth"                : [100], # Ignored if ``max_leaf_nodes`` is not None.
+            "min_samples_split"        : [10],
+            "min_samples_leaf"         : [110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300],
             "min_weight_fraction_leaf" : [0.0],
             "subsample"                : [1.0],
             "max_features"             : [None],
