@@ -14,6 +14,8 @@ from collections import OrderedDict
 from multiprocessing import Process
 
 from sklearn.metrics import roc_auc_score
+from sklearn.metrics import log_loss
+from sklearn.metrics import accuracy_score
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.grid_search import ParameterGrid
 from sklearn.cross_validation import StratifiedShuffleSplit
@@ -106,12 +108,12 @@ def make_submission(classifier, parma_dict, filename="submission"):
     id_test, X_test = load_test_data()
 
     logger.info("predict start ...")
-    y_test_pred = classifier.predict_proba(X_test)
-    logger.info("y_test_pred.shape = %r", y_test_pred.shape)
+    y_test_proba = classifier.predict_proba(X_test)
+    logger.info("y_test_proba.shape = %r", y_test_proba.shape)
     logger.info("predict end.")
 
     path = "../data/%s.csv" % filename
-    submission = pd.DataFrame({"enrollment_id": id_test, "dropout": y_test_pred[:, -1]})
+    submission = pd.DataFrame({"enrollment_id": id_test, "dropout": y_test_proba[:, -1]})
     
     logger.info("dump %s start ...", path)
     submission.to_csv(path, columns = ["enrollment_id", "dropout"], header=False, index=False)
@@ -154,10 +156,16 @@ def train_validate_test(param_dict):
     logger.info("train end.")
     
     logger.info("predict start ...")
-    y_train_pred = classifier.predict_proba(X_train)
-    y_validate_pred = classifier.predict_proba(X_validate)
-    auc_train = roc_auc_score(y_train, y_train_pred[:, -1])
-    auc_validate = roc_auc_score(y_validate, y_validate_pred[:, -1])
+    y_train_pred = classifier.predict(X_train)
+    y_train_proba = classifier.predict_proba(X_train)
+    y_validate_pred = classifier.predict(X_validate)
+    y_validate_proba = classifier.predict_proba(X_validate)
+    acc_train = accuracy_score(y_train, y_train_pred)
+    auc_train = roc_auc_score(y_train, y_train_proba[:, -1])
+    logloss_train = log_loss(y_train, y_train_proba)
+    acc_validate = accuracy_score(y_validate, y_validate_pred)
+    auc_validate = roc_auc_score(y_validate, y_validate_proba[:, -1])
+    logloss_validate = log_loss(y_validate, y_validate_proba)
     logger.info("training set auc: %r", auc_train)
     logger.info("validateion set auc: %r", auc_validate)
     logger.info("predict end.")
@@ -169,6 +177,10 @@ def train_validate_test(param_dict):
     meta = OrderedDict()
     meta["model"] = "RandomForest"
     meta["param_dict"] = param_dict
+    meta["acc_train"] = acc_train
+    meta["acc_validate"] = acc_validate
+    meta["logloss_train"] = logloss_train
+    meta["logloss_validate"] = logloss_validate
     meta["auc_train"] = auc_train
     meta["auc_validate"] = auc_validate
     
