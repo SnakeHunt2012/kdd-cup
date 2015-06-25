@@ -14,7 +14,9 @@ from collections import OrderedDict
 from multiprocessing import Process
 
 from sklearn.svm import SVC
+from sklearn.metrics import log_loss
 from sklearn.metrics import roc_auc_score
+from sklearn.metrics import accuracy_score
 from sklearn.grid_search import ParameterGrid
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.preprocessing import StandardScaler
@@ -140,12 +142,12 @@ def make_submission(classifier, scaler, parma_dict, filename="submission"):
     id_test, X_test = load_test_data(scaler)
 
     logger.info("predict start ...")
-    y_test_pred = classifier.predict_proba(X_test)
-    logger.info("y_test_pred.shape = %r", y_test_pred.shape)
+    y_test_proba = classifier.predict_proba(X_test)
+    logger.info("y_test_proba.shape = %r", y_test_proba.shape)
     logger.info("predict end.")
 
     path = "../data/%s.csv" % filename
-    submission = pd.DataFrame({"enrollment_id": id_test, "dropout": y_test_pred[:, -1]})
+    submission = pd.DataFrame({"enrollment_id": id_test, "dropout": y_test_proba[:, -1]})
     
     logger.info("dump %s start ...", path)
     submission.to_csv(path, columns = ["enrollment_id", "dropout"], header=False, index=False)
@@ -186,10 +188,16 @@ def train_validate_test(param_dict):
     logger.info("train end.")
     
     logger.info("predict start ...")
-    y_train_pred = classifier.predict_proba(X_train)
-    y_validate_pred = classifier.predict_proba(X_validate)
-    auc_train = roc_auc_score(y_train, y_train_pred[:, -1])
-    auc_validate = roc_auc_score(y_validate, y_validate_pred[:, -1])
+    y_train_pred = classifier.predict(X_train)
+    y_train_proba = classifier.predict_proba(X_train)
+    y_validate_pred = classifier.predict(X_validate)
+    y_validate_proba = classifier.predict_proba(X_validate)
+    acc_train = accuracy_score(y_train, y_train_pred)
+    auc_train = roc_auc_score(y_train, y_train_proba[:, -1])
+    logloss_train = log_loss(y_train, y_train_pred)
+    acc_validate = accuracy_score(y_validate, y_validate_pred)
+    auc_validate = roc_auc_score(y_validate, y_validate_proba[:, -1])
+    logloss_validate = log_loss(y_validate, y_validate_pred)
     logger.info("training set auc: %r", auc_train)
     logger.info("validateion set auc: %r", auc_validate)
     logger.info("predict end.")
@@ -214,41 +222,57 @@ def train_validate_test(param_dict):
 def develop():
 
     param_grid = [
-        {
-            "scaler" : [None, "StandardScaler", "MinMaxScaler"], # this is framework featured parameter, not belongs to the model
-            "C" : [1.0],
+        {   # rbf: C overfit, gamma underfit
+            "scaler" : ["StandardScaler"], # this is framework featured parameter, not belongs to the model
+            "C" : [1.1, 1.5, 2.0], # >1. overfit
             "kernel" : ["rbf"],
             "degree" : [3], # Note: Degree of the polynomial kernel function ('poly'), ignored by all other kernels.
-            "gamma" : [0.0],
+            "gamma" : [0.0, 0.03, 0.025, 0.02], # <.03 underfit
             "coef0" : [0.0], # Note: It is only significant in 'poly' and 'sigmoid'.
             "probability" : [True],
             "shrinking" : [True],
             "tol" : [1e-3],
             "cache_size" : [1024],
-            "class_weight" : [None, "auto"],
+            "class_weight" : ["auto"],
             "verbose" : [False],
             "max_iter" : [-1],
             "random_state" : [None]
         },
-        {
-            "scaler" : [None, "StandardScaler", "MinMaxScaler"], # this is framework featured parameter, not belongs to the model
-            "C" : [1.0],
-            "kernel" : ["poly"],
+        {   # rbf: C underfit, gamma overfit
+            "scaler" : ["StandardScaler"], # this is framework featured parameter, not belongs to the model
+            "C" : [0.7, 0.8, 0.9], # <1. underfit
+            "kernel" : ["rbf"],
             "degree" : [3], # Note: Degree of the polynomial kernel function ('poly'), ignored by all other kernels.
-            "gamma" : [0.0],
+            "gamma" : [0.0, 0.035, 0.03, 0.025], # >.03 overfit
             "coef0" : [0.0], # Note: It is only significant in 'poly' and 'sigmoid'.
             "probability" : [True],
             "shrinking" : [True],
             "tol" : [1e-3],
             "cache_size" : [1024],
-            "class_weight" : [None, "auto"],
+            "class_weight" : ["auto"],
             "verbose" : [False],
             "max_iter" : [-1],
             "random_state" : [None]
         },
-        {
-            "scaler" : [None, "StandardScaler", "MinMaxScaler"], # this is framework featured parameter, not belongs to the model
-            "C" : [1.0],
+        {   # poly
+            "scaler" : ["StandardScaler"], # this is framework featured parameter, not belongs to the model
+            "C" : [0.9, 1.1, 1.5],
+            "kernel" : ["poly"],
+            "degree" : [2, 4], # Note: Degree of the polynomial kernel function ('poly'), ignored by all other kernels.
+            "gamma" : [0.0, 0.02, 0.04],
+            "coef0" : [0.0], # Note: It is only significant in 'poly' and 'sigmoid'.
+            "probability" : [True],
+            "shrinking" : [True],
+            "tol" : [1e-3],
+            "cache_size" : [1024],
+            "class_weight" : ["auto"],
+            "verbose" : [False],
+            "max_iter" : [-1],
+            "random_state" : [None]
+        },
+        {   # linear
+            "scaler" : ["StandardScaler"], # this is framework featured parameter, not belongs to the model
+            "C" : [0.9, 1.1, 1.5],
             "kernel" : ["linear"],
             "degree" : [3], # Note: Degree of the polynomial kernel function ('poly'), ignored by all other kernels.
             "gamma" : [0.0],
@@ -257,7 +281,7 @@ def develop():
             "shrinking" : [True],
             "tol" : [1e-3],
             "cache_size" : [1024],
-            "class_weight" : [None, "auto"],
+            "class_weight" : ["auto"],
             "verbose" : [False],
             "max_iter" : [-1],
             "random_state" : [None]
