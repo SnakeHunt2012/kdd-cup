@@ -233,22 +233,6 @@ def develop():
         {
             "scaler" : [None, "StandardScaler", "MinMaxScaler"], # this is framework featured parameter, not belongs to the model
             "C" : [1.0],
-            "kernel" : ["sigmoid"],
-            "degree" : [3], # Note: Degree of the polynomial kernel function ('poly'), ignored by all other kernels.
-            "gamma" : [0.0],
-            "coef0" : [0.0], # Note: It is only significant in 'poly' and 'sigmoid'.
-            "probability" : [True],
-            "shrinking" : [True],
-            "tol" : [1e-3],
-            "cache_size" : [1024],
-            "class_weight" : [None, "auto"],
-            "verbose" : [False],
-            "max_iter" : [-1],
-            "random_state" : [None]
-        },
-        {
-            "scaler" : [None, "StandardScaler", "MinMaxScaler"], # this is framework featured parameter, not belongs to the model
-            "C" : [1.0],
             "kernel" : ["poly"],
             "degree" : [3], # Note: Degree of the polynomial kernel function ('poly'), ignored by all other kernels.
             "gamma" : [0.0],
