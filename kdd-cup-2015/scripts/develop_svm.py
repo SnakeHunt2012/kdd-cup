@@ -212,7 +212,7 @@ def train_validate_test(param_dict):
     meta["acc_train"] = acc_train
     meta["auc_train"] = auc_train
     meta["logloss_train"] = logloss_train
-    meta["acc_train"] = acc_validate
+    meta["acc_validate"] = acc_validate
     meta["auc_validate"] = auc_validate
     meta["logloss_validate"] = logloss_validate
     
