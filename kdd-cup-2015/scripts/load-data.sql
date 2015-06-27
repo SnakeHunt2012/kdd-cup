@@ -6,6 +6,9 @@ drop table log_train;
 drop table log_test;
 drop table object;
 drop table truth_train;
+drop table rf_meta;
+drop table gb_meta;
+drop table svm_meta;
 */
 
 /* create tables */
@@ -52,6 +55,107 @@ create table object (
 create table truth_train (
        enrollment_id	 integer,
        dropout		 boolean
+);
+
+create table rf_meta (
+       model			varchar,
+
+       timestamp		timestamp,
+       pid			int4,
+       tid			int8,
+       
+       warm_start		boolean,
+       oob_score		boolean,
+       n_jobs			integer,
+       max_leaf_nodes		integer,
+       bootstrap		boolean,
+       min_samples_leaf		integer,
+       n_estimators		integer,
+       min_samples_split	integer,
+       min_weight_fraction_leaf	float8,
+       criterion		varchar,
+       random_state		integer,
+       max_features		varchar,
+       max_depth		integer,
+       class_weight		varchar,
+       
+       acc_train		float8,
+       acc_validate		float8,
+       logloss_train		float8,
+       logloss_validate		float8,
+       auc_train		float8,
+       auc_validate		float8,
+
+       target			varchar,
+       filename			varchar,
+
+       primary key(model, timestamp, pid, tid)
+);
+
+create table gb_meta (
+       model			varchar,
+       
+       timestamp		timestamp,
+       pid			int4,
+       tid			int8,
+       
+       loss			varchar,
+       subsample		float8,
+       max_leaf_nodes		integer,
+       learning_rate		float8,
+       min_samples_leaf		integer,
+       n_estimators		integer,
+       min_samples_split	integer,
+       init			varchar,
+       min_weight_fraction_leaf	float8,
+       max_features		varchar,
+       max_depth		integer,
+
+       acc_train		float8,
+       acc_validate		float8,
+       logloss_train		float8,
+       logloss_validate		float8,
+       auc_train		float8,
+       auc_validate		float8,
+       
+       target			varchar,
+       filename			varchar,
+       
+       primary key(model, timestamp, pid, tid)
+);
+
+create table svm_meta (
+       model			varchar,
+       
+       timestamp		timestamp,
+       pid			int4,
+       tid			int8,
+       
+       kernel			varchar,
+       C			float8,
+       probability		boolean,
+       degree			integer,
+       scaler			varchar,
+       shrinking		boolean,
+       max_iter			integer,
+       random_state		integer,
+       tol			float8,
+       cache_size		integer,
+       coef0			float8,
+       gamma			float8,
+       class_weight		varchar,
+
+       acc_train		float8,
+       acc_validate		float8,
+       logloss_train		float8,
+       logloss_validate		float8,
+       auc_train		float8,
+       auc_validate		float8,
+       
+       target			varchar,
+       filename			varchar,
+       
+       primary key(model, timestamp, pid, tid)
 );
 
 /* load tables */
