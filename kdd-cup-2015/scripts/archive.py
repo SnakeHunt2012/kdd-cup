@@ -172,15 +172,79 @@ def archive_gb(session, date, time, pid, tid, target, filename, json_dict):
 
     model = json_dict["model"]
     timestamp = date + "T" + time.replace("-", ":")
+    param_dict = json_dict["param_dict"]
 
-    pass
+    gb_meta = GB_Meta(
+        model=model,
+        timestamp=timestamp,
+        pid=pid,
+        tid=tid,
+    
+        loss=param_dict["loss"],
+        subsample=param_dict["subsample"],
+        max_leaf_nodes=param_dict["max_leaf_nodes"],
+        learning_rate=param_dict["learning_rate"],
+        min_samples_leaf=param_dict["min_samples_leaf"],
+        n_estimators=param_dict["n_estimators"],
+        min_samples_split=param_dict["min_samples_split"],
+        init=param_dict["init"],
+        min_weight_fraction_leaf=param_dict["min_weight_fraction_leaf"],
+        max_features=param_dict["max_features"],
+        max_depth=param_dict["max_depth"],
+    
+        acc_train=json_dict["acc_train"],
+        acc_validate=json_dict["acc_validate"],
+        logloss_train=json_dict["logloss_train"],
+        logloss_validate=json_dict["logloss_validate"],
+        
+        auc_train=json_dict["auc_train"],
+        auc_validate=json_dict["auc_validate"],
+    
+        target=target,
+        filename=filename
+    )
+    session.add(gb_meta)
+    session.commit()
     
 def archive_svm(session, date, time, pid, tid, target, filename, json_dict):
 
     model = json_dict["model"]
     timestamp = date + "T" + time.replace("-", ":")
+    param_dict = json_dict["param_dict"]
     
-    pass
+    svm_meta = SVM_Meta(
+        model=model,
+        timestamp=timestamp,
+        pid=pid,
+        tid=tid,
+    
+        kernel=param_dict["kernel"],
+        C=param_dict["C"],
+        probability=param_dict["probability"],
+        degree=param_dict["degree"],
+        scaler=param_dict["scaler"],
+        shrinking=param_dict["shrinking"],
+        max_iter=param_dict["max_iter"],
+        random_state=param_dict["random_state"],
+        tol=param_dict["tol"],
+        cache_size=param_dict["cache_size"],
+        coef0=param_dict["coef0"],
+        gamma=param_dict["gamma"],
+        class_weight=param_dict["class_weight"],
+    
+        acc_train=json_dict["acc_train"],
+        acc_validate=json_dict["acc_validate"],
+        logloss_train=json_dict["logloss_train"],
+        logloss_validate=json_dict["logloss_validate"],
+        
+        auc_train=json_dict["auc_train"],
+        auc_validate=json_dict["auc_validate"],
+    
+        target=target,
+        filename=filename
+    )
+    session.add(svm_meta)
+    session.commit()
 
 def archive_directory(json_file, target):
 
