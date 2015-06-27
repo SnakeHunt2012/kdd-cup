@@ -102,7 +102,7 @@ class SVM_Meta(Base):
 
     # json_dict["param_dict"]
     kernel = Column(String);
-    C = Column(Float);
+    c = Column(Float);
     probability = Column(Boolean);
     degree = Column(Integer);
     scaler = Column(String);
@@ -219,7 +219,7 @@ def archive_svm(session, date, time, pid, tid, target, filename, json_dict):
         tid=tid,
     
         kernel=param_dict["kernel"],
-        C=param_dict["C"],
+        c=param_dict["C"],
         probability=param_dict["probability"],
         degree=param_dict["degree"],
         scaler=param_dict["scaler"],
@@ -232,8 +232,10 @@ def archive_svm(session, date, time, pid, tid, target, filename, json_dict):
         gamma=param_dict["gamma"],
         class_weight=param_dict["class_weight"],
     
-        acc_train=json_dict["acc_train"],
-        acc_validate=json_dict["acc_validate"],
+        #acc_train=json_dict["acc_train"],
+        #acc_validate=json_dict["acc_validate"],
+        acc_validate=json_dict["acc_train"],
+        
         logloss_train=json_dict["logloss_train"],
         logloss_validate=json_dict["logloss_validate"],
         
@@ -284,7 +286,7 @@ def archive(json_file, session, target):
     print "archive %s -> %s ..." % (json_file, target),
 
     archive_database(json_file, session, target)
-    #archive_directory(json_file, target)
+    archive_directory(json_file, target)
     
     print "done."
 
