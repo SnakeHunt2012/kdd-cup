@@ -209,8 +209,12 @@ def train_validate_test(param_dict):
     meta = OrderedDict()
     meta["model"] = "SVM"
     meta["param_dict"] = param_dict
+    meta["acc_train"] = acc_train
     meta["auc_train"] = auc_train
+    meta["logloss_train"] = logloss_train
+    meta["acc_train"] = acc_validate
     meta["auc_validate"] = auc_validate
+    meta["logloss_validate"] = logloss_validate
     
     logger.info("dump %s start ...", path)
     with open(path, 'w') as fp:
@@ -259,7 +263,7 @@ def develop():
             "C" : [0.9, 1.1, 1.5],
             "kernel" : ["poly"],
             "degree" : [2, 4], # Note: Degree of the polynomial kernel function ('poly'), ignored by all other kernels.
-            "gamma" : [0.0, 0.02, 0.04],
+            "gamma" : [0.0, 0.04],
             "coef0" : [0.0], # Note: It is only significant in 'poly' and 'sigmoid'.
             "probability" : [True],
             "shrinking" : [True],
