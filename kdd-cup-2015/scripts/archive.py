@@ -158,7 +158,6 @@ def archive_rf(session, date, time, pid, tid, target, filename, json_dict):
         acc_validate=json_dict["acc_validate"],
         logloss_train=json_dict["logloss_train"],
         logloss_validate=json_dict["logloss_validate"],
-        
         auc_train=json_dict["auc_train"],
         auc_validate=json_dict["auc_validate"],
     
@@ -196,7 +195,6 @@ def archive_gb(session, date, time, pid, tid, target, filename, json_dict):
         acc_validate=json_dict["acc_validate"],
         logloss_train=json_dict["logloss_train"],
         logloss_validate=json_dict["logloss_validate"],
-        
         auc_train=json_dict["auc_train"],
         auc_validate=json_dict["auc_validate"],
     
@@ -232,13 +230,10 @@ def archive_svm(session, date, time, pid, tid, target, filename, json_dict):
         gamma=param_dict["gamma"],
         class_weight=param_dict["class_weight"],
     
-        #acc_train=json_dict["acc_train"],
-        #acc_validate=json_dict["acc_validate"],
-        acc_validate=json_dict["acc_train"],
-        
+        acc_train=json_dict["acc_train"],
+        acc_validate=json_dict["acc_validate"],
         logloss_train=json_dict["logloss_train"],
         logloss_validate=json_dict["logloss_validate"],
-        
         auc_train=json_dict["auc_train"],
         auc_validate=json_dict["auc_validate"],
     
