@@ -5,6 +5,7 @@ drop table enrollment_test;
 drop table log_train;
 drop table log_test;
 drop table object;
+drop table date;
 drop table truth_train;
 drop table rf_meta;
 drop table gb_meta;
@@ -50,6 +51,12 @@ create table object (
        category	    varchar(17),
        children	    text,
        start	    timestamp without time zone
+);
+
+create table date (
+       course_id  char(32),
+       date_from  timestamp without time zone,
+       date_to	  timestamp without time zone
 );
 
 create table truth_train (
@@ -160,46 +167,53 @@ create table svm_meta (
 
 /* load tables */
 copy enrollment_train
-from '/home/admin/jingwen.hjw/learn/kdd-cup-2015/data/enrollment_train.csv'
+from '/apsarapangu/disk5/jingwen.hjw/learn/kdd-cup/kdd-cup-2015/data/enrollment_train.csv'
 with csv header;
 
 copy enrollment_test
-from '/home/admin/jingwen.hjw/learn/kdd-cup-2015/data/enrollment_test.csv'
+from '/apsarapangu/disk5/jingwen.hjw/learn/kdd-cup/kdd-cup-2015/data/enrollment_test.csv'
 with csv header;
 
 copy log_train
-from '/home/admin/jingwen.hjw/learn/kdd-cup-2015/data/log_train.csv'
+from '/apsarapangu/disk5/jingwen.hjw/learn/kdd-cup/kdd-cup-2015/data/log_train.csv'
 with csv header;
 
 copy log_test
-from '/home/admin/jingwen.hjw/learn/kdd-cup-2015/data/log_test.csv'
+from '/apsarapangu/disk5/jingwen.hjw/learn/kdd-cup/kdd-cup-2015/data/log_test.csv'
 with csv header;
 
+copy date
+from '/apsarapangu/disk5/jingwen.hjw/learn/kdd-cup/kdd-cup-2015/data/date.csv'
+with csv header null 'null';
+
 copy object
-from '/home/admin/jingwen.hjw/learn/kdd-cup-2015/data/object.csv'
+from '/apsarapangu/disk5/jingwen.hjw/learn/kdd-cup/kdd-cup-2015/data/object.csv'
 with csv header null 'null';
 
 copy truth_train
-from '/home/admin/jingwen.hjw/learn/kdd-cup-2015/data/truth_train.csv'
+from '/apsarapangu/disk5/jingwen.hjw/learn/kdd-cup/kdd-cup-2015/data/truth_train.csv'
 with csv;
 
 /* dump tables */
 /*
 copy enrollment_train
-to '/home/admin/jingwen.hjw/learn/kdd-cup-2015/data/enrollment_train.sql';
+to '/apsarapangu/disk5/jingwen.hjw/learn/kdd-cup/kdd-cup-2015/data/enrollment_train.sql';
 
 copy enrollment_test
-to '/home/admin/jingwen.hjw/learn/kdd-cup-2015/data/enrollment_test.sql';
+to '/apsarapangu/disk5/jingwen.hjw/learn/kdd-cup/kdd-cup-2015/data/enrollment_test.sql';
 
 copy log_train
-to '/home/admin/jingwen.hjw/learn/kdd-cup-2015/data/log_train.sql';
+to '/apsarapangu/disk5/jingwen.hjw/learn/kdd-cup/kdd-cup-2015/data/log_train.sql';
 
 copy log_test
-to '/home/admin/jingwen.hjw/learn/kdd-cup-2015/data/log_test.sql';
+to '/apsarapangu/disk5/jingwen.hjw/learn/kdd-cup/kdd-cup-2015/data/log_test.sql';
+
+copy date
+to '/apsarapangu/disk5/jingwen.hjw/learn/kdd-cup/kdd-cup-2015/data/date.sql';
 
 copy object
-to '/home/admin/jingwen.hjw/learn/kdd-cup-2015/data/object.sql';
+to '/apsarapangu/disk5/jingwen.hjw/learn/kdd-cup/kdd-cup-2015/data/object.sql';
 
 copy truth_train
-to '/home/admin/jingwen.hjw/learn/kdd-cup-2015/data/truth_train.sql';
+to '/apsarapangu/disk5/jingwen.hjw/learn/kdd-cup/kdd-cup-2015/data/truth_train.sql';
 */
