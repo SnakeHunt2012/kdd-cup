@@ -51,9 +51,19 @@ result <- sqldf("select username, count(distinct course_id) from log_test group 
 names(result) <- c("username", "course_count");
 write.table(result, file = "../data/feature_history_course_count_test.csv", row.names = FALSE, quote = FALSE, sep = ",");
 
-# 2.2 TODO 历史dropout数量（针对老用户）
+# 2.2 DONE 历史总共产生过的每种event的数量
+sql_frame <- sqldf("select username, event, count(*) from log_test group by enrollment_id, username, course_id, event");
+result <- cast(sql_frame, username ~ event, sum)
+write.table(result, file = "../data/feature_user_event_test.csv", row.names = FALSE, quote = FALSE, sep = ",");
 
-# 2.3 TODO 历史pass数量（针对老用户）
+# 2.3 TODO 历史总共产生过的浏览数
+result <- sqldf("select username, count(*) from log_test group by username");
+names(result) <- c("username", "user_event_count");
+write.table(result, file = "../data/feature_user_log_count_test.csv", row.names = FALSE, quote = FALSE, sep = ",");
+
+# 2.4 TODO 历史dropout数量（针对老用户）
+
+# 2.5 TODO 历史pass数量（针对老用户）
 
 ## 2 cross featrues
 
@@ -78,15 +88,15 @@ result <- sqldf("select a.enrollment_id, a.username, a.course_id, to_char(b.max 
 names(result) <- c("enrollment_id", "username", "course_id", "right_time");
 write.table(result, file = "../data/feature_right_time_test.csv", row.names = FALSE, quote = FALSE, sep = ",");
 
-# 2.4 DONE 浏览总次数
+# 3.4 DONE 浏览总次数
 result <- sqldf("select enrollment_id, username, course_id, count(*) from log_test group by enrollment_id, username, course_id");
 names(result) <- c("enrollment_id", "username", "course_id", "log_count");
-write.table(result, file = "../data/feature_log_count_test.csv", row.names = FALSE, quote = FALSE, sep = ",");
+write.table(result, file = "../data/feature_enrollment_log_count_test.csv", row.names = FALSE, quote = FALSE, sep = ",");
 
-# 2.5 DONE 每种event的数量
+# 3.5 DONE 每种event的数量
 sql_frame <- sqldf("select enrollment_id, username, course_id, event, count(*) from log_test group by enrollment_id, username, course_id, event");
 result <- cast(sql_frame, enrollment_id + username + course_id ~ event, sum)
-write.table(result, file = "../data/feature_event_test.csv", row.names = FALSE, quote = FALSE, sep = ",");
+write.table(result, file = "../data/feature_enrollment_event_test.csv", row.names = FALSE, quote = FALSE, sep = ",");
 
 # 2.6 TODO 当前同时加入的课程数
 #result <- sqldf("");

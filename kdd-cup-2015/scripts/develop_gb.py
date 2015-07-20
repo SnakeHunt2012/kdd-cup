@@ -213,7 +213,7 @@ def develop():
             "n_estimators"             : [100],
             "max_depth"                : [100], # Ignored if ``max_leaf_nodes`` is not None.
             "min_samples_split"        : [10],
-            "min_samples_leaf"         : [110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300],
+            "min_samples_leaf"         : range(460, 710, 10),
             "min_weight_fraction_leaf" : [0.0],
             "subsample"                : [1.0],
             "max_features"             : [None],

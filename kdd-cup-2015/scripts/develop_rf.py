@@ -197,10 +197,10 @@ def develop():
         {
             "n_estimators"             : [200],
             "criterion"                : ["gini"],
-            "max_features"             : [None, "auto", "sqrt", "log2"],
+            "max_features"             : ["auto", "sqrt", "log2"],
             "max_depth"                : [None],
-            "min_samples_split"        : [25, 50],
-            "min_samples_leaf"         : [45, 50, 55],
+            "min_samples_split"        : [5, 10, 15, 20], #[25, 50],
+            "min_samples_leaf"         : [5, 10, 15, 20], #[25, 30, 35, 40, 45, 50, 55],
             "min_weight_fraction_leaf" : [0.0],
             "max_leaf_nodes"           : [None],
             "bootstrap"                : [True],

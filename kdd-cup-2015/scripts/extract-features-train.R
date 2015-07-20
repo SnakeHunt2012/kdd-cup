@@ -51,18 +51,28 @@ result <- sqldf("select username, count(distinct course_id) from log_train group
 names(result) <- c("username", "course_count");
 write.table(result, file = "../data/feature_history_course_count_train.csv", row.names = FALSE, quote = FALSE, sep = ",");
 
-# 2.2 TODO 历史dropout数量（针对老用户）
+# 2.2 DONE 历史总共产生过的每种event的数量
+sql_frame <- sqldf("select username, event, count(*) from log_train group by enrollment_id, username, course_id, event");
+result <- cast(sql_frame, username ~ event, sum)
+write.table(result, file = "../data/feature_user_event_train.csv", row.names = FALSE, quote = FALSE, sep = ",");
 
-# 2.3 TODO 历史pass数量（针对老用户）
+# 2.3 TODO 历史总共产生过的浏览数
+result <- sqldf("select username, count(*) from log_train group by username");
+names(result) <- c("username", "user_event_count");
+write.table(result, file = "../data/feature_user_log_count_train.csv", row.names = FALSE, quote = FALSE, sep = ",");
 
-## 2 cross featrues
+# 2.4 TODO 历史dropout数量（针对老用户）
 
-# 2.1 DONE 最后一次浏览时间 - 第一次浏览时间
+# 2.5 TODO 历史pass数量（针对老用户）
+
+## 3 cross featrues
+
+# 3.1 DONE 最后一次浏览时间 - 第一次浏览时间
 result <- sqldf("select enrollment_id, username, course_id, to_char(max(time) - min(time), 'DD') from log_train group by enrollment_id, username, course_id");
 names(result) <- c("enrollment_id", "username", "course_id", "total_time");
 write.table(result, file = "../data/feature_total_time_train.csv", row.names = FALSE, quote = FALSE, sep = ",");
 
-# 2.2 DONE 第一次浏览时间 - 课程开始时间
+# 3.2 DONE 第一次浏览时间 - 课程开始时间
 result <- sqldf("select a.enrollment_id, a.username, a.course_id, to_char(a.min - b.min, 'DD') from
                  (select distinct enrollment_id, username, course_id, min(time) from log_train group by enrollment_id, username, course_id) a,
                  (select distinct course_id, min(time) from log_train group by course_id) b
@@ -70,7 +80,7 @@ result <- sqldf("select a.enrollment_id, a.username, a.course_id, to_char(a.min 
 names(result) <- c("enrollment_id", "username", "course_id", "left_time");
 write.table(result, file = "../data/feature_left_time_train.csv", row.names = FALSE, quote = FALSE, sep = ",");
 
-# 2.3 DONE 课程结束时间 - 最后一次浏览时间
+# 3.3 DONE 课程结束时间 - 最后一次浏览时间
 result <- sqldf("select a.enrollment_id, a.username, a.course_id, to_char(b.max - a.max, 'DD') from
                  (select distinct enrollment_id, username, course_id, max(time) from log_train group by enrollment_id, username, course_id) a,
                  (select distinct course_id, max(time) from log_train group by course_id) b
@@ -78,17 +88,17 @@ result <- sqldf("select a.enrollment_id, a.username, a.course_id, to_char(b.max 
 names(result) <- c("enrollment_id", "username", "course_id", "right_time");
 write.table(result, file = "../data/feature_right_time_train.csv", row.names = FALSE, quote = FALSE, sep = ",");
 
-# 2.4 DONE 浏览总次数
+# 3.4 DONE 浏览总次数
 result <- sqldf("select enrollment_id, username, course_id, count(*) from log_train group by enrollment_id, username, course_id");
 names(result) <- c("enrollment_id", "username", "course_id", "log_count");
-write.table(result, file = "../data/feature_log_count_train.csv", row.names = FALSE, quote = FALSE, sep = ",");
+write.table(result, file = "../data/feature_enrollment_log_count_train.csv", row.names = FALSE, quote = FALSE, sep = ",");
 
-# 2.5 DONE 每种event的数量
+# 3.5 DONE 每种event的数量
 sql_frame <- sqldf("select enrollment_id, username, course_id, event, count(*) from log_train group by enrollment_id, username, course_id, event");
 result <- cast(sql_frame, enrollment_id + username + course_id ~ event, sum)
-write.table(result, file = "../data/feature_event_train.csv", row.names = FALSE, quote = FALSE, sep = ",");
+write.table(result, file = "../data/feature_enrollment_event_train.csv", row.names = FALSE, quote = FALSE, sep = ",");
 
-# 2.6 TODO 当前同时加入的课程数
+# 3.6 TODO 当前同时加入的课程数
 #result <- sqldf("");
 #names(result) <- c();
 #write.table(result, file = "../data/feature_current_course_count_train.csv", row.names = FALSE, quote = FALSE, sep = ",");

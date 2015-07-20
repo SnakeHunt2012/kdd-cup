@@ -231,7 +231,7 @@ def develop():
             "C" : [1.1, 1.5, 2.0], # >1. overfit
             "kernel" : ["rbf"],
             "degree" : [3], # Note: Degree of the polynomial kernel function ('poly'), ignored by all other kernels.
-            "gamma" : [0.0, 0.03, 0.025, 0.02], # <.03 underfit
+            "gamma" : [0.02, 0.015, 0.01, 0.005], # <.03 underfit
             "coef0" : [0.0], # Note: It is only significant in 'poly' and 'sigmoid'.
             "probability" : [True],
             "shrinking" : [True],
@@ -244,10 +244,10 @@ def develop():
         },
         {   # rbf: C underfit, gamma overfit
             "scaler" : ["StandardScaler"], # this is framework featured parameter, not belongs to the model
-            "C" : [0.7, 0.8, 0.9], # <1. underfit
+            "C" : [0.5, 0.55, 0.6, 0.65], # <1. underfit
             "kernel" : ["rbf"],
             "degree" : [3], # Note: Degree of the polynomial kernel function ('poly'), ignored by all other kernels.
-            "gamma" : [0.0, 0.035, 0.03, 0.025], # >.03 overfit
+            "gamma" : [0.01, 0.015, 0.02, 0.025], # >.03 overfit
             "coef0" : [0.0], # Note: It is only significant in 'poly' and 'sigmoid'.
             "probability" : [True],
             "shrinking" : [True],
@@ -260,10 +260,10 @@ def develop():
         },
         {   # poly
             "scaler" : ["StandardScaler"], # this is framework featured parameter, not belongs to the model
-            "C" : [0.9, 1.1, 1.5],
+            "C" : [0.7, 0.9, 1.1, 1.5],
             "kernel" : ["poly"],
-            "degree" : [2, 4], # Note: Degree of the polynomial kernel function ('poly'), ignored by all other kernels.
-            "gamma" : [0.0, 0.04],
+            "degree" : [4, 5], # Note: Degree of the polynomial kernel function ('poly'), ignored by all other kernels.
+            "gamma" : [0.01, 0.015, 0.02, 0.025],
             "coef0" : [0.0], # Note: It is only significant in 'poly' and 'sigmoid'.
             "probability" : [True],
             "shrinking" : [True],
@@ -276,10 +276,10 @@ def develop():
         },
         {   # linear
             "scaler" : ["StandardScaler"], # this is framework featured parameter, not belongs to the model
-            "C" : [0.9, 1.1, 1.5],
+            "C" : [0.9, 1.1, 1.5, 2, 2.5],
             "kernel" : ["linear"],
             "degree" : [3], # Note: Degree of the polynomial kernel function ('poly'), ignored by all other kernels.
-            "gamma" : [0.0],
+            "gamma" : [0.02, 0.025, 0.3, 0.035],
             "coef0" : [0.0], # Note: It is only significant in 'poly' and 'sigmoid'.
             "probability" : [True],
             "shrinking" : [True],
